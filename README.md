@@ -18,6 +18,24 @@ It takes a string, and returns a list of `Min`-`Max` pairs, which can then be ex
 * `10.0.0.1-10`
 * `10.0.0.1, 10.0.0.5-10, 192.168.1.*, 192.168.10.0/24`
 
+## Corrections
+
+Corrections made to panic on netmasks > 32. Will now return an error.
+Also adapted the use of goyacc.
+
+To compile:
+
+Install goyacc first:
+
+go install golang.org/x/tools/cmd/goyacc@latest
+
+execute:
+
+go generate to regenerate the parser code in Go
+
+Added tests for check for correct working of netmasks > 32.
+
+
 ## Usage
 
 ```go

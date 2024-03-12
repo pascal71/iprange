@@ -170,3 +170,9 @@ func TestListExpansion(t *testing.T) {
 	expanded := rangeList.Expand()
 	assert.Len(t, expanded, 20)
 }
+
+func TestMaskOutOfRange(t *testing.T) {
+	ipRange, err := Parse("192.168.10.2/33")
+	assert.Nil(t, ipRange)
+	assert.Error(t, err)
+}

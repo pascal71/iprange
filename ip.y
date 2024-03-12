@@ -52,20 +52,25 @@ comma: ',' | ',' ' '
 
 target:     address '/' num
                 {
-                    mask := net.CIDRMask(int($3), 32)
-                    min := $1.Min.Mask(mask)
-                    maxInt := binary.BigEndian.Uint32([]byte(min)) +
-                                0xffffffff -
-                                binary.BigEndian.Uint32([]byte(mask))
-                    maxBytes := make([]byte, 4)
-                    binary.BigEndian.PutUint32(maxBytes, maxInt)
-                    maxBytes = maxBytes[len(maxBytes)-4:]
-                    max := net.IP(maxBytes)
-                    $$ = AddressRange {
-                        Min: min.To4(),
-                        Max: max.To4(),
+                    if int($3) > 32 {
+                        iplex.(*ipLex).err = errors.New("netmask out of range for IPv4 address")
+                    } else {
+                    
+                      mask := net.CIDRMask(int($3), 32)
+                      min := $1.Min.Mask(mask)
+                      maxInt := binary.BigEndian.Uint32([]byte(min)) +
+                                  0xffffffff -
+                                  binary.BigEndian.Uint32([]byte(mask))
+                      maxBytes := make([]byte, 4)
+                      binary.BigEndian.PutUint32(maxBytes, maxInt)
+                      maxBytes = maxBytes[len(maxBytes)-4:]
+                      max := net.IP(maxBytes)
+                      $$ = AddressRange {
+                          Min: min.To4(),
+                          Max: max.To4(),
+                      }
                     }
-                }
+                  }
       |     address
                 {
                     $$ = $1
